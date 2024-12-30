@@ -1,0 +1,37 @@
+{
+  "name": "proyecto-pdf",
+  "version": "1.0.0",
+  "description": "Aplicación para modificar PDFs automáticamente",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "dist": "electron-builder --win"
+  },
+  "build": {
+    "productName": "PDF Editor",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "main.js",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "src/icon.ico"
+    },
+    "nsis": {
+      "allowElevation": true,
+      "oneClick": false
+    }
+  },
+  "devDependencies": {
+    "electron": "^25.3.1",
+    "electron-builder": "^24.13.3"
+  },
+  "dependencies": {
+    "pdf-lib": "^1.17.1"
+  }
+}
