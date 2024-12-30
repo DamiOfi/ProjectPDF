@@ -34,3 +34,17 @@ document.getElementById('view-pdf').addEventListener('click', async () => {
     alert('Error al intentar abrir el PDF.');
   }
 });
+
+document.getElementById('modify-multi-page-pdf').addEventListener('click', async () => {
+  document.getElementById('loading-message').style.display = 'block';
+
+  const outputPath = await ipcRenderer.invoke('modify-multi-page-pdf');
+
+  document.getElementById('loading-message').style.display = 'none';
+
+  if (outputPath) {
+    alert(`PDF de varias páginas modificado y guardado en: ${outputPath}`);
+  } else {
+    alert('No se pudo modificar el PDF.');
+  }
+});

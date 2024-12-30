@@ -56,3 +56,23 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
+
+ipcMain.handle('modify-multi-page-pdf', async () => {
+  const result = await dialog.showOpenDialog({
+    properties: ['openFile'],
+    filters: [{ name: 'PDF Files', extensions: ['pdf'] }],
+  });
+
+  if (!result.canceled) {
+    const inputPath = result.filePaths[0];
+    const outputPath = inputPath.replace('.pdf', '_modified.pdf');
+    try {
+      await modifyMultiPagePDF(inputPath, outputPath); // Función para manejar PDF multipágina
+      return outputPath; // Devuelve la ruta del archivo editado
+    } catch (error) {
+      console.error('Error al modificar el PDF:', error);
+      return null;
+    }
+  }
+  return null;
+});

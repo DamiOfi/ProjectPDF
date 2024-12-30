@@ -42,4 +42,32 @@ async function modifyPDF(inputPath, outputPath) {
   }
 }
 
-module.exports = { modifyPDF };
+async function modifyMultiPagePDF(inputPath, outputPath) {
+  try {
+    const existingPdfBytes = fs.readFileSync(inputPath);
+    const pdfDoc = await PDFDocument.load(existingPdfBytes);
+
+    // Elimina páginas específicas (ejemplo: elimina la página 2 y 4)
+    const pagesToKeep = [0, 2]; // Índices de las páginas que deseas conservar
+    pdfDoc.reorderPages(pagesToKeep);
+
+    // Editar páginas específicas
+    const pages = pdfDoc.getPages();
+    const pageToEdit = pages[0]; // Edita la primera página como ejemplo
+    pageToEdit.drawText('Texto añadido a esta página', {
+      x: 50,
+      y: 50,
+      size: 12,
+    });
+
+    const pdfBytes = await pdfDoc.save();
+    fs.writeFileSync(outputPath, pdfBytes);
+
+    console.log('PDF multipágina modificado y guardado en:', outputPath);
+  } catch (error) {
+    console.error('Error al modificar el PDF de varias páginas:', error);
+    throw error;
+  }
+}
+
+module.exports = { modifyPDF, modifyMultiPagePDF };
