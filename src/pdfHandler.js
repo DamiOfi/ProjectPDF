@@ -70,4 +70,65 @@ async function modifyMultiPagePDF(inputPath, outputPath) {
   }
 }
 
-module.exports = { modifyPDF, modifyMultiPagePDF };
+const {  StandardFonts } = require('pdf-lib');
+
+async function modifyPDF(inputPath, outputPath) {
+  try {
+    const existingPdfBytes = fs.readFileSync(inputPath);
+    const pdfDoc = await PDFDocument.load(existingPdfBytes);
+    const pages = pdfDoc.getPages();
+    const firstPage = pages[0];
+
+    const areasToCover = [
+      { x: 14, y: 416, width: 100, height: 11 },
+      { x: 383, y: 198, width: 55, height: 8 },
+      { x: 500, y: 198, width: 55, height: 8 },
+    ];
+
+    areasToCover.forEach(({ x, y, width, height }) => {
+      firstPage.drawRectangle({
+        x,
+        y,
+        width,
+        height,
+        color: rgb(1, 1, 1),
+      });
+    });
+
+    const pdfBytes = await pdfDoc.save();
+    fs.writeFileSync(outputPath, pdfBytes);
+  } catch (error) {
+    console.error('Error al modificar el PDF:', error);
+    throw error;
+  }
+}
+
+async function addTextToPDF(inputPath, outputPath) {
+  try {
+    const existingPdfBytes = fs.readFileSync(inputPath);
+    const pdfDoc = await PDFDocument.load(existingPdfBytes);
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+    const pages = pdfDoc.getPages();
+    const firstPage = pages[0];
+
+    const x = 120;
+    const y = 630;
+
+    firstPage.drawText('Valor trimestral', {
+      x,
+      y,
+      size: 8,
+      font,
+      color: rgb(0, 0, 0),
+    });
+
+    const pdfBytes = await pdfDoc.save();
+    fs.writeFileSync(outputPath, pdfBytes);
+  } catch (error) {
+    console.error('Error al agregar texto al PDF:', error);
+    throw error;
+  }
+}
+
+module.exports = { modifyPDF, addTextToPDF };

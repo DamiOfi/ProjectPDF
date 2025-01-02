@@ -48,3 +48,17 @@ document.getElementById('modify-multi-page-pdf').addEventListener('click', async
     alert('No se pudo modificar el PDF.');
   }
 });
+
+document.getElementById('add-text-to-pdf').addEventListener('click', async () => {
+  document.getElementById('loading-message').style.display = 'block';
+
+  const outputPath = await ipcRenderer.invoke('add-text-to-pdf');
+
+  document.getElementById('loading-message').style.display = 'none';
+
+  if (outputPath) {
+    alert(`Texto añadido y PDF guardado en: ${outputPath}`);
+  } else {
+    alert('No se pudo modificar el PDF.');
+  }
+});

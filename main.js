@@ -2,6 +2,8 @@ const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const { modifyPDF } = require('./src/pdfHandler');
 const fs = require('fs');
+const { addTextToPDF } = require('./src/pdfHandler');
+
 
 let mainWindow;
 
@@ -71,6 +73,26 @@ ipcMain.handle('modify-multi-page-pdf', async () => {
       return outputPath; // Devuelve la ruta del archivo editado
     } catch (error) {
       console.error('Error al modificar el PDF:', error);
+      return null;
+    }
+  }
+  return null;
+});
+
+ipcMain.handle('add-text-to-pdf', async () => {
+  const result = await dialog.showOpenDialog({
+    properties: ['openFile'],
+    filters: [{ name: 'PDF Files', extensions: ['pdf'] }],
+  });
+
+  if (!result.canceled) {
+    const inputPath = result.filePaths[0];
+    const outputPath = inputPath.replace('.pdf', '_text_added.pdf');
+    try {
+      await addTextToPDF(inputPath, outputPath); // Función para agregar texto
+      return outputPath; // Devuelve la ruta del archivo editado
+    } catch (error) {
+      console.error('Error al agregar texto al PDF:', error);
       return null;
     }
   }
