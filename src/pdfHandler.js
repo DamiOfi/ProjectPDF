@@ -118,7 +118,7 @@ async function addTextToPDF(inputPath, outputPath) {
     firstPage.drawText('Valor trimestral', {
       x,
       y,
-      size: 8,
+      size: 7,
       font,
       color: rgb(0, 0, 0),
     });

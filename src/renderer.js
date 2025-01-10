@@ -34,7 +34,7 @@ document.getElementById('view-pdf').addEventListener('click', async () => {
     alert('Error al intentar abrir el PDF.');
   }
 });
-
+/* 
 document.getElementById('modify-multi-page-pdf').addEventListener('click', async () => {
   document.getElementById('loading-message').style.display = 'block';
 
@@ -47,7 +47,7 @@ document.getElementById('modify-multi-page-pdf').addEventListener('click', async
   } else {
     alert('No se pudo modificar el PDF.');
   }
-});
+}); */
 
 document.getElementById('add-text-to-pdf').addEventListener('click', async () => {
   document.getElementById('loading-message').style.display = 'block';
@@ -61,4 +61,12 @@ document.getElementById('add-text-to-pdf').addEventListener('click', async () =>
   } else {
     alert('No se pudo modificar el PDF.');
   }
+});
+
+document.getElementById('open-doc1').addEventListener('click', () => {
+  ipcRenderer.invoke('open-document', 'doc1');
+});
+
+document.getElementById('open-doc2').addEventListener('click', () => {
+  ipcRenderer.invoke('open-document', 'doc2');
 });

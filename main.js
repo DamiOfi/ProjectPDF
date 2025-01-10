@@ -58,7 +58,7 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
-
+/* 
 ipcMain.handle('modify-multi-page-pdf', async () => {
   const result = await dialog.showOpenDialog({
     properties: ['openFile'],
@@ -78,7 +78,7 @@ ipcMain.handle('modify-multi-page-pdf', async () => {
   }
   return null;
 });
-
+ */
 ipcMain.handle('add-text-to-pdf', async () => {
   const result = await dialog.showOpenDialog({
     properties: ['openFile'],
@@ -97,4 +97,19 @@ ipcMain.handle('add-text-to-pdf', async () => {
     }
   }
   return null;
+});
+
+// Ruta absoluta para los documentos PDF
+const docPaths = {
+  doc1: path.join(__dirname, './src/assets/documents/Presupuesto OFI 1.pdf'),
+  doc2: path.join(__dirname, './src/assets/documents/Presupuesto OFI 2.pdf'),
+};
+
+// Manejador para abrir documentos específicos
+ipcMain.handle('open-document', async (event, docKey) => {
+  if (docPaths[docKey]) {
+    shell.openPath(docPaths[docKey]); // Abre el documento con el visor predeterminado del sistema
+  } else {
+    console.error('Documento no encontrado:', docKey);
+  }
 });
