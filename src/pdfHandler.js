@@ -1,26 +1,22 @@
 const fs = require('fs');
-const { PDFDocument, rgb } = require('pdf-lib');
+const { PDFDocument, rgb, StandardFonts } = require('pdf-lib');
 
 async function modifyPDF(inputPath, outputPath) {
   try {
-    // Lee el archivo PDF original
     const existingPdfBytes = fs.readFileSync(inputPath);
-
-    // Carga el PDF
     const pdfDoc = await PDFDocument.load(existingPdfBytes);
-
-    // Obtén la primera página (o puedes iterar sobre más páginas si es necesario)
     const pages = pdfDoc.getPages();
     const firstPage = pages[0];
 
-    // Coordenadas para las áreas que deseas borrar (ajusta según necesidad)
+    // Áreas a cubrir con rectángulos blancos
     const areasToCover = [
-      { x: 14, y: 416, width: 100, height: 11 }, // Área 1
-      { x: 383, y: 198, width: 55, height: 8 }, // Área 2
-      { x: 500, y: 198, width: 55, height: 8 }, // Área 3
+      { x: 14, y: 416, width: 100, height: 11 },
+      { x: 383, y: 198, width: 55, height: 8 },
+      { x: 500, y: 198, width: 55, height: 8 },
+      { x: 500, y: 679, width: 55, height: 10 },
+      { x: 310, y: 612, width: 200, height: 10 },
     ];
 
-    // Cubre las áreas especificadas con rectángulos blancos
     areasToCover.forEach(({ x, y, width, height }) => {
       firstPage.drawRectangle({
         x,
@@ -31,10 +27,27 @@ async function modifyPDF(inputPath, outputPath) {
       });
     });
 
-    // Guarda el PDF modificado
+    // Agregar texto al PDF
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    firstPage.drawText('Valor trimestral ($12.000 valido por 3 meses)', {
+      x: 310,
+      y: 612,
+      size: 8,
+      font,
+      color: rgb(0, 0, 0),
+    });
+
+    firstPage.drawText('Av. Lasalle 4269', {
+      x: 500,
+      y: 680,
+      size: 8,
+      font,
+      color: rgb(0, 0, 0),
+    });
+
+    // Guardar el PDF modificado
     const pdfBytes = await pdfDoc.save();
     fs.writeFileSync(outputPath, pdfBytes);
-
     console.log('PDF modificado y guardado en:', outputPath);
   } catch (error) {
     console.error('Error al modificar el PDF:', error);
@@ -42,47 +55,20 @@ async function modifyPDF(inputPath, outputPath) {
   }
 }
 
-async function modifyMultiPagePDF(inputPath, outputPath) {
-  try {
-    const existingPdfBytes = fs.readFileSync(inputPath);
-    const pdfDoc = await PDFDocument.load(existingPdfBytes);
-
-    // Elimina páginas específicas (ejemplo: elimina la página 2 y 4)
-    const pagesToKeep = [0, 2]; // Índices de las páginas que deseas conservar
-    pdfDoc.reorderPages(pagesToKeep);
-
-    // Editar páginas específicas
-    const pages = pdfDoc.getPages();
-    const pageToEdit = pages[0]; // Edita la primera página como ejemplo
-    pageToEdit.drawText('Texto añadido a esta página', {
-      x: 50,
-      y: 50,
-      size: 12,
-    });
-
-    const pdfBytes = await pdfDoc.save();
-    fs.writeFileSync(outputPath, pdfBytes);
-
-    console.log('PDF multipágina modificado y guardado en:', outputPath);
-  } catch (error) {
-    console.error('Error al modificar el PDF de varias páginas:', error);
-    throw error;
-  }
-}
-
-const {  StandardFonts } = require('pdf-lib');
-
-async function modifyPDF(inputPath, outputPath) {
+async function modifyPDFOficina1(inputPath, outputPath) {
   try {
     const existingPdfBytes = fs.readFileSync(inputPath);
     const pdfDoc = await PDFDocument.load(existingPdfBytes);
     const pages = pdfDoc.getPages();
     const firstPage = pages[0];
 
+    // Áreas a cubrir con rectángulos blancos (igual que en modifyPDF)
     const areasToCover = [
       { x: 14, y: 416, width: 100, height: 11 },
       { x: 383, y: 198, width: 55, height: 8 },
       { x: 500, y: 198, width: 55, height: 8 },
+      { x: 500, y: 679, width: 55, height: 10 },
+      { x: 310, y: 612, width: 200, height: 10 },
     ];
 
     areasToCover.forEach(({ x, y, width, height }) => {
@@ -91,12 +77,32 @@ async function modifyPDF(inputPath, outputPath) {
         y,
         width,
         height,
-        color: rgb(1, 1, 1),
+        color: rgb(1, 1, 1), // Blanco
       });
     });
 
+    // Agregar texto específico para la segunda oficina
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    firstPage.drawText('Valor trimestral ($14.000 valido por 3 meses)', {
+      x: 310,
+      y: 612,
+      size: 8,
+      font,
+      color: rgb(0, 0, 0),
+    });
+
+    firstPage.drawText('Av. Simon Perez 5098', { // Dirección de la segunda oficina
+      x: 491,
+      y: 680,
+      size: 8,
+      font,
+      color: rgb(0, 0, 0),
+    });
+
+    // Guardar el PDF modificado
     const pdfBytes = await pdfDoc.save();
     fs.writeFileSync(outputPath, pdfBytes);
+    console.log('PDF modificado y guardado en:', outputPath);
   } catch (error) {
     console.error('Error al modificar el PDF:', error);
     throw error;
@@ -112,12 +118,9 @@ async function addTextToPDF(inputPath, outputPath) {
     const pages = pdfDoc.getPages();
     const firstPage = pages[0];
 
-    const x = 120;
-    const y = 630;
-
-    firstPage.drawText('Valor trimestral', {
-      x,
-      y,
+    firstPage.drawText('Valor trimestral ($12.000 valido por 3 meses)', {
+      x: 120,
+      y: 630,
       size: 7,
       font,
       color: rgb(0, 0, 0),
@@ -125,10 +128,11 @@ async function addTextToPDF(inputPath, outputPath) {
 
     const pdfBytes = await pdfDoc.save();
     fs.writeFileSync(outputPath, pdfBytes);
+    console.log('Texto agregado y PDF guardado en:', outputPath);
   } catch (error) {
     console.error('Error al agregar texto al PDF:', error);
     throw error;
   }
 }
 
-module.exports = { modifyPDF, addTextToPDF };
+module.exports = { modifyPDF, modifyPDFOficina1, addTextToPDF };

@@ -13,6 +13,17 @@ document.getElementById('load-pdf').addEventListener('click', async () => {
   document.getElementById('view-pdf').disabled = false; // Habilita el botón de vista
 });
 
+document.getElementById('load-pdf-oficina1').addEventListener('click', async () => {
+  document.getElementById('loading-message').style.display = 'block';
+
+  // Solicita la edición del PDF
+  outputPath = await ipcRenderer.invoke('load-pdf-oficina1');
+
+  document.getElementById('loading-message').style.display = 'none';
+  document.getElementById('download-pdf').disabled = false; // Habilita el botón
+  document.getElementById('view-pdf').disabled = false; // Habilita el botón de vista
+});
+
 document.getElementById('download-pdf').addEventListener('click', async () => {
   if (!outputPath) {
     alert('No hay un archivo PDF cargado o editado.');
