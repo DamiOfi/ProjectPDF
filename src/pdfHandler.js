@@ -118,7 +118,7 @@ async function addTextToPDF(inputPath, outputPath) {
     const pages = pdfDoc.getPages();
     const firstPage = pages[0];
 
-    firstPage.drawText('Valor trimestral ($12.000 valido por 3 meses)', {
+    firstPage.drawText('Valor trimestral (valido por 3 meses)', {
       x: 120,
       y: 630,
       size: 7,

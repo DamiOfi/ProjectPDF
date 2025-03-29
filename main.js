@@ -9,8 +9,8 @@ let mainWindow;
 
 app.on('ready', () => {
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 700,
+    height: 900,
     webPreferences: {
       preload: path.join(__dirname, 'src/renderer.js'),
       contextIsolation: false,
